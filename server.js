@@ -28,6 +28,7 @@ const create_hosts = (n) => {
       hosts = [
         ...hosts,
         {
+          "id" : i,
           "name" : `host${i + 1}`,
           "hostname" : `nessus-${port.name}.lab.com`,
           "port" : port.number,
