@@ -2,8 +2,8 @@ var express     = require('express'),
     path        = require('path'),
     app         = express(),
     http        = require('http'),
-    HTTP_PORT   = process.env.PORT || 8080;
-
+    HTTP_PORT   = process.env.PORT || 3003;
+    const axios = require('axios')
 const usernames = require('./data/usernames.json');
 const ports = require('./data/ports.json');
 
@@ -56,6 +56,34 @@ app.get('/download/request?:host',(req,res) => res.json(
   }
 ));
 
+
+const API_URL = 'https://www.tesla.com/inventory/api/v1/';
+
+const query = {
+  query: {
+    model: 'ms',
+    condition: 'new',
+    options: {},
+    arrangeby: 'Relevance',
+    order: 'desc',
+    market: 'US',
+    language: 'en',
+    super_region: 'north america'
+  },
+  offset: 0,
+  count: 50,
+  outsideOffset: 0,
+  outsideSearch: true
+}
+
+const getInventory = () =>
+  axios.get(`${API_URL}inventory-results?query=${JSON.stringify(query)}`)
+
+  app.get('/inventory', async(req,res) => {
+    let response = await getInventory();
+    console.log('inventory API called - ', new Date())
+    res.json(response.data);
+});
 
 http.createServer(app).listen(HTTP_PORT, function(){
     console.log('Server running on port '+ HTTP_PORT);
