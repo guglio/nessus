@@ -3,7 +3,7 @@ var express     = require('express'),
     app         = express(),
     http        = require('http'),
     HTTP_PORT   = process.env.PORT || 3003;
-    const axios = require('axios')
+    const axios = require('axios');
 const usernames = require('./data/usernames.json');
 const ports = require('./data/ports.json');
 
@@ -76,11 +76,11 @@ const query = {
   outsideSearch: true
 }
 
-const getInventory = () =>
-  axios.get(`${API_URL}inventory-results?query=${JSON.stringify(query)}`)
+const getInventory = (qr = JSON.stringify(query) ) =>
+  axios.get(`${API_URL}inventory-results?query=${qr}`)
 
-  app.get('/inventory', async(req,res) => {
-    let response = await getInventory();
+app.get('/inventory/*', async(req,res) => {
+    let response = await getInventory(req.query.query || undefined);
     console.log('inventory API called - ', new Date())
     res.json(response.data);
 });
